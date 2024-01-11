@@ -2,8 +2,10 @@ package com.example.simulateurmarche.controllers;
 
 import com.example.simulateurmarche.DTO.CountType;
 import com.example.simulateurmarche.entities.ERole;
+import com.example.simulateurmarche.entities.Formation;
 import com.example.simulateurmarche.entities.Role;
 import com.example.simulateurmarche.entities.User;
+import com.example.simulateurmarche.repositories.FormationRepository;
 import com.example.simulateurmarche.repositories.UserRepository;
 import com.example.simulateurmarche.services.RoleService;
 import com.example.simulateurmarche.services.UserService;
@@ -34,6 +36,9 @@ public class UserController {
     RoleService roleService;
     @Autowired
     UserRepository userRepo;
+    @Autowired
+    FormationRepository formrepo;
+
 
     @GetMapping("/allUsers")
     public List<User> retrieveAllUsers() {
@@ -237,4 +242,23 @@ public class UserController {
     public List<User> getdisabledUsers() {
         return userService.getdisable();
     }
-}
+
+    @PostMapping("/participate/{fid}/{uid}")
+    @ResponseBody
+    public ResponseEntity<Formation> participateFormation(@PathVariable("fid") int fid, @PathVariable("uid") long uid) {
+        if (this.getpartitipationperuser(uid)<3) {
+            return ResponseEntity.ok(userService.participateFormation(fid, uid));
+        }else {
+            return null;
+        }
+    }
+
+
+    @GetMapping("/formationbyuser/{iduser}")
+    int getpartitipationperuser(@PathVariable("iduser") long userid){
+
+        return userService.getpartitipationperuser(userid);
+    }
+
+
+    }
