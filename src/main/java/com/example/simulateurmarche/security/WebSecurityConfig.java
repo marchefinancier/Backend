@@ -104,12 +104,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 ).permitAll()
                 //.antMatchers(HttpMethod.POST, "/ajouter").authenticated()
 
-                .antMatchers("/**/api-auth/**","/**/user/**","/user/checkEmail","/user/allUsers","/api-auth/**","/user/**","/reclamation/**","/organisation/**","/role/**").permitAll()
+                .antMatchers("/**/api-auth/**","/**/user/**","/**/chatbot/**","/**/Formation/**","/user/checkEmail","/user/allUsers","/api-auth/**","/user/**","/reclamation/**","/organisation/**","/role/**").permitAll()
 
 
-                .antMatchers("/**/api-auth/**","/**/user/**","/user/checkEmail","/user/allUsers","/organisation/**","/api-auth/**","/user/**","/role/**","**/organisation/**","**/organisation/ajouter"
+                .antMatchers("/**/api-auth/**","/**/chat/**","/**/user/**","/user/checkEmail","/user/allUsers","/organisation/**","/api-auth/**","/user/**","/role/**","**/organisation/**","**/organisation/ajouter"
                 ).permitAll()
                 .antMatchers("/**/api/sms").permitAll()
+
 
 
                 .antMatchers(HttpMethod.OPTIONS,"/**").permitAll()

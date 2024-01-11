@@ -3,6 +3,7 @@ package com.example.simulateurmarche.Iservices;
 
 import com.example.simulateurmarche.DTO.CountType;
 import com.example.simulateurmarche.entities.ERole;
+import com.example.simulateurmarche.entities.Formation;
 import com.example.simulateurmarche.entities.User;
 
 import java.io.ByteArrayInputStream;
@@ -48,4 +49,7 @@ public interface IUserService {
     public User BlocUser(long id);
     public User unblockuser(long id);
 
+    public Formation participateFormation(int fid , long uid );
+
+    int getpartitipationperuser(long iduser);
 }

@@ -12,15 +12,17 @@ public class WebSocketChatConfiguration implements WebSocketMessageBrokerConfigu
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/start");
-        config.setApplicationDestinationPrefixes("/current");
+        config.enableSimpleBroker("/topic");
+        config.setApplicationDestinationPrefixes("/app");
     }
 
+
+    // add an endpoint to our websocket configuration
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry
-                .addEndpoint("/testchat")
-                .setAllowedOrigins("http://localhost:4200")
+                .addEndpoint("/ws")
+             //   .setAllowedOrigins("http://localhost:4200")
                 .withSockJS();
     }
 }

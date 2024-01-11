@@ -4,8 +4,10 @@ package com.example.simulateurmarche.services;
 import com.example.simulateurmarche.DTO.CountType;
 import com.example.simulateurmarche.Iservices.IUserService;
 import com.example.simulateurmarche.entities.ERole;
+import com.example.simulateurmarche.entities.Formation;
 import com.example.simulateurmarche.entities.Role;
 import com.example.simulateurmarche.entities.User;
+import com.example.simulateurmarche.repositories.FormationRepository;
 import com.example.simulateurmarche.repositories.RoleRepository;
 import com.example.simulateurmarche.repositories.UserRepository;
 
@@ -48,6 +50,8 @@ public class UserService implements IUserService {
     UserRepository userRepo;
     @Autowired
     RoleRepository roleRepo;
+    @Autowired
+    FormationRepository formrep;
     @Override
     public List<User> getUsers() {
 
@@ -236,6 +240,26 @@ public class UserService implements IUserService {
 
     }
 
+    @Override
+    public Formation participateFormation(int fid, long uid) {
+        User user = userRepo.findById(uid).orElse(null);
+        Formation formation = formrep.findById(fid).orElse(null);
+
+       formation.getUsers().add(user);
+       user.getFormationss().add(formation);
+       userRepo.save(user);
+       return formrep.save(formation);
+
+
+    }
+
+    @Override
+    public int getpartitipationperuser(long iduser) {
+
+        User u =userRepo.findById(iduser).get();
+        return u.getFormationss().size();
+    }
+
 
     public  static String CodeGen(){
         String caracters="ABCDEFJHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -248,7 +272,6 @@ public class UserService implements IUserService {
         }
         for(int i=0;i<lenght;i++){
             randomcode+=text[i];
-
         }
         return randomcode ;
 

@@ -12,6 +12,7 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -59,7 +60,16 @@ public class User implements Serializable {
     @ManyToMany(fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
     @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
+    @OneToMany(mappedBy = "user")
+    @JsonIgnore
+    List<Formation> formations;
 
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JsonIgnore
+    @JoinTable(name = "participations",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "formation_id"))
+    private Set<Formation> formationss = new HashSet<>();
 
     public User(@Size(max = 80) String username, @Size(max = 50) @Email String email, @Size(max = 120) String password,
                 String address, @Size(max = 50) String tel, @Size(max = 50) String nom, @Size(max = 50) String prenom,
