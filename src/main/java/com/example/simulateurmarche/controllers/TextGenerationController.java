@@ -15,9 +15,11 @@ public class TextGenerationController {
     private chatService huggingFaceService;
     @PostMapping("/generate-text")
     @ResponseBody
-    public String generateText( @RequestBody String question) {
-        return huggingFaceService.generateText("respond me as an expert finance , give me  the response in one text in french, question: "+question);
+    public ResponseEntity<String> generateText(@RequestBody String userMessage) {
+        String response = huggingFaceService.generateText("respond me as an expert finance , give me  the response in one text in french, question: "+userMessage);
+        return ResponseEntity.ok(response);
     }
+
 
 
 }
