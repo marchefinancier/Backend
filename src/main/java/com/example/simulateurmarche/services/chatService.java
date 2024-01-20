@@ -1,41 +1,67 @@
 package com.example.simulateurmarche.services;
 
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import com.example.simulateurmarche.payload.request.ChatRequest;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Logger;
+
+@Slf4j
 @Service
 public class chatService {
 
 
+    @Value("${huggingface.api.url}")
+    private String apiUrl;
 
+    @Value("${huggingface.api.token}")
+    private String apiToken;
 
-        private final String apiUrl = "https://api-inference.huggingface.co/models/openchat/openchat-3.5-1210";
-        private final String apiToken = "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";
+    private final RestTemplate restTemplate;
+    private final ObjectMapper objectMapper;
+
+    public chatService(RestTemplateBuilder restTemplateBuilder, ObjectMapper objectMapper) {
+        this.restTemplate = restTemplateBuilder.build();
+        this.objectMapper = objectMapper;
+    }
 
     public String generateText(String userMessage) {
-        RestTemplate restTemplate = new RestTemplate();
-
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + apiToken);
-        headers.set("Content-Type", "application/json");
+        headers.setContentType(MediaType.APPLICATION_JSON);
 
-        String requestBody = "{\"inputs\": \"" +userMessage+ "\"}";
-        HttpEntity<String> entity = new HttpEntity<>(requestBody, headers);
+        ChatRequest requestData = new ChatRequest(userMessage);
 
-        ResponseEntity<String> response = restTemplate.postForEntity(apiUrl, entity, String.class);
+        try {
+            String requestBody = objectMapper.writeValueAsString(requestData);
+            log.info("Request Payload: {}", requestBody);
 
-        // Log the entire response entity
-        System.out.println("Response: " + response);
+            HttpEntity<String> entity = new HttpEntity<>(requestBody, headers);
 
-        if (response.getStatusCode() == HttpStatus.OK) {
-            String output = response.getBody();
-            System.out.println(output);
-            return output;
-        } else {
+            ResponseEntity<String> response = restTemplate.postForEntity(apiUrl, entity, String.class);
+
+            log.info("Response: {}", response);
+
+            if (response.getStatusCode() == HttpStatus.OK) {
+                return response.getBody();
+            } else {
+                return "Error occurred";
+            }
+        } catch (JsonProcessingException e) {
+            log.error("Error while serializing JSON: {}", e.getMessage());
+            return "Error occurred";
+        } catch (Exception e) {
+            log.error("Exception occurred: {}", e.getMessage());
             return "Error occurred";
         }
     }
